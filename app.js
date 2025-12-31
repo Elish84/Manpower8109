@@ -93,11 +93,13 @@ function escapeHtml(s) {
 }
 
 function getForceCollection(forceName) {
-  // מנרמל: "פלוגה א" → "א_פלוגה"
-  const parts = forceName.trim().split(" ");
-  const slug = parts.length === 2
-    ? `${parts[1]}_${parts[0]}`
-    : forceName.replace(/\s+/g, "_");
+  // תואם ל-DB הקיים: "פלוגה א" -> "א_פלוגה"
+  const parts = String(forceName || "").trim().split(/\s+/);
+  let slug = forceName.replace(/\s+/g, "_");
+
+  if (parts.length === 2 && parts[0] === "פלוגה") {
+    slug = `${parts[1]}_${parts[0]}`; // א_פלוגה
+  }
 
   return `units_${slug}_soldiers`;
 }
