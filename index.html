@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>8109 – ניהול כוח אדם (Firestore)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- מסך כניסה -->
+  <section id="loginView" class="card">
+    <h1>8109 – ניהול כוח אדם</h1>
+    <p class="muted">כניסה בסיסית (סיסמה בקובץ קונפיג) + בחירת תפקיד וכוח</p>
+
+    <div class="grid">
+      <label>
+        סיסמה
+        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="••••••" />
+      </label>
+
+      <label>
+        מי אתה?
+        <select id="loginRole"></select>
+      </label>
+
+      <label>
+        כוח
+        <select id="loginForce"></select>
+      </label>
+    </div>
+
+    <div class="row">
+      <button id="btnLogin" class="primary">כניסה</button>
+      <span id="loginMsg" class="msg"></span>
+    </div>
+
+    <details class="muted small">
+      <summary>הערה</summary>
+      <div>הסיסמה בקונפיג היא POC בלבד. בשלב הזה נשתמש גם ב-Anon Auth כדי לאפשר Rules בסיסיים.</div>
+    </details>
+  </section>
+
+  <!-- מסך מערכת -->
+  <section id="appView" class="hidden">
+    <header class="topbar">
+      <div class="title">
+        <h2 id="ctxTitle">כוח אדם</h2>
+        <div class="muted small" id="ctxSubtitle"></div>
+      </div>
+
+      <div class="row">
+        <button id="btnLogout">יציאה</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- צד שמאל: פעולות -->
+      <section class="card">
+        <h3>הוספת חייל</h3>
+
+        <div class="grid4">
+          <label>שם פרטי <input id="fFirst" /></label>
+          <label>שם משפחה <input id="fLast" /></label>
+          <label>פלוגה <input id="fCompany" placeholder="א / ב / ג / מסייעת / מפקדה" /></label>
+          <label>מחלקה <input id="fPlatoon" placeholder="למשל 1/2/3" /></label>
+
+          <label>כיתה <input id="fSquad" placeholder="למשל א/ב/ג" /></label>
+          <label>שיוך גדוד <input id="fBattalion" /></label>
+
+          <label>תפקיד 1
+            <select id="r1"></select>
+          </label>
+          <label>תפקיד 2
+            <select id="r2"></select>
+          </label>
+
+          <label>תפקיד 3
+            <select id="r3"></select>
+          </label>
+          <label>תפקיד 4
+            <select id="r4"></select>
+          </label>
+        </div>
+
+        <div class="row">
+          <button id="btnAdd" class="primary">הוסף</button>
+          <span id="addMsg" class="msg"></span>
+        </div>
+
+        <hr class="sep" />
+
+        <h3>ייבוא CSV / JSON</h3>
+        <p class="muted small">
+          CSV חייב לכלול כותרות (לפחות): firstName,lastName,company,platoon,squad,battalion,role1,role2,role3,role4
+          <br/>JSON: מערך של אובייקטים עם אותם שמות שדות.
+        </p>
+
+        <div class="grid2">
+          <label>
+            קובץ לייבוא
+            <input id="importFile" type="file" accept=".csv,.json,application/json,text/csv" />
+          </label>
+
+          <label>
+            מצב ייבוא
+            <select id="importMode">
+              <option value="merge">מיזוג (הוספה בלבד)</option>
+              <option value="replace">ניקוי כוח ואז ייבוא</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="row">
+          <button id="btnImport" class="primary">ייבוא</button>
+          <button id="btnExportJson">ייצוא JSON (מהטבלה)</button>
+          <span id="importMsg" class="msg"></span>
+        </div>
+      </section>
+
+      <!-- צד ימין: טבלה + סינון -->
+      <section class="card">
+        <h3>רשימת חיילים</h3>
+
+        <div class="filters">
+          <label>
+            חיפוש (שם)
+            <input id="qName" placeholder="חפש לפי שם פרטי/משפחה..." />
+          </label>
+
+          <label>
+            סינון תפקיד
+            <select id="qRole"></select>
+          </label>
+
+          <label>
+            סינון מחלקה
+            <input id="qPlatoon" placeholder="למשל 1/2/3" />
+          </label>
+
+          <div class="row" style="margin-top:0">
+            <button id="btnClearFilters">נקה סינונים</button>
+            <span class="muted small" id="countHint"></span>
+          </div>
+        </div>
+
+        <div class="muted small">לחיצה על “ערוך” תפתח עריכה בשורה.</div>
+
+        <div class="tableWrap">
+          <table id="tbl">
+            <thead>
+              <tr>
+                <th>שם</th>
+                <th>שיוך</th>
+                <th>תפקידים</th>
+                <th class="actions">פעולות</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="muted small" id="liveHint"></div>
+      </section>
+    </main>
+  </section>
+
+  <!-- קונפיגים -->
+  <script src="firebase-config.js"></script>
+  <script src="config.js"></script>
+
+  <!-- אפליקציה -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
