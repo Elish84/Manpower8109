@@ -93,14 +93,15 @@ function escapeHtml(s) {
 }
 
 function getForceCollection(forceName) {
-  const slug = forceName
-    .replaceAll('"', "")
-    .replaceAll("'", "")
-    .replaceAll("–","-")
-    .replaceAll("—","-")
-    .replace(/\s+/g, "_");
+  // מנרמל: "פלוגה א" → "א_פלוגה"
+  const parts = forceName.trim().split(" ");
+  const slug = parts.length === 2
+    ? `${parts[1]}_${parts[0]}`
+    : forceName.replace(/\s+/g, "_");
+
   return `units_${slug}_soldiers`;
 }
+
 
 function setMsg(el, text, isError=false) {
   el.textContent = text || "";
