@@ -2,7 +2,7 @@
 window.BATT_CONFIG = {
   app: { title: "8109 – ניהול כוח אדם", battalion_name_default: "8109" },
   auth: { simple_password: "8109" },
-  roles: ["ק.שלישות",'שבצ"ק','מ"פ','מג"ד'],
+  roles: ["ק.שלישות",'שבצ\"ק','מ\"פ','מג\"ד'],
   forces: [
     { id: "pluga_a", label: "פלוגה א" },
     { id: "pluga_b", label: "פלוגה ב" },
